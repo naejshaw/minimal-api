@@ -1,7 +1,8 @@
 using MinimalApi.Dominio.Entidades;
-using MinimalApi.Dominio.Interfaces;
 using MinimalApi.DTOs;
 using MinimalApi.Infraestrutura.Db;
+using MinimalApi.Dominio.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace MinimalApi.Dominio.Servicos;
 
@@ -12,12 +13,12 @@ public class VeiculoServico : IVeiculoServico
         _contexto = contexto;
     }
 
-    public void Apagar(VeiculoServico veiculo){
+    public void Apagar(Veiculo veiculo){
         _contexto.Veiculos.Remove(veiculo);
         _contexto.SaveChanges();
     }
 
-    public void Atualizar(VeiculoServico veiculo){
+    public void Atualizar(Veiculo veiculo){
         _contexto.Veiculos.Update(veiculo);
         _contexto.SaveChanges();
     }
@@ -26,18 +27,20 @@ public class VeiculoServico : IVeiculoServico
         return _contexto.Veiculos.Where(v => v.Id == id).FirstOrDefault();
     }
 
-    public void Incluir(VeiculoServico veiculo){
+    public void Incluir(Veiculo veiculo){
         _contexto.Veiculos.Add(veiculo);
         _contexto.SaveChanges();
     }
 
-    public List<Veiculo> Todos(int pagina = 1, string? nome = null, string? marca = null){
+    public List<Veiculo> Todos(int? pagina = 1, string? nome = null, string? marca = null){
         var query = _contexto.Veiculos.AsQueryable();
         if(!string.IsNullOrEmpty(nome)){
             query = query.Where(v => EF.Functions.Like(v.Nome.ToLower(), $"%{nome}%"));
         }
         int itemsPorPagina = 10;
-        query = query.Skip((pagina - 1) * itemsPorPagina).Take(itemsPorPagina);
+        if(pagina != null){
+            query = query.Skip(((int)pagina - 1) * itemsPorPagina).Take(itemsPorPagina);
+        }
 
         return query.ToList();
     }
