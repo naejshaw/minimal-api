@@ -29,7 +29,7 @@ public class AdministradorServico : IAdministradorServico
     }
     public List<Administrador> Todos(int? pagina){
         var query = _contexto.Administradores.AsQueryable();
-        int itemsPorPagina = 10;
+        int itemsPorPagina = 3;
         if(pagina != null){
             query = query.Skip(((int)pagina - 1) * itemsPorPagina).Take(itemsPorPagina);
         }

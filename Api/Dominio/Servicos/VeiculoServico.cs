@@ -37,7 +37,7 @@ public class VeiculoServico : IVeiculoServico
         if(!string.IsNullOrEmpty(nome)){
             query = query.Where(v => EF.Functions.Like(v.Nome.ToLower(), $"%{nome}%"));
         }
-        int itemsPorPagina = 10;
+        int itemsPorPagina = 3;
         if(pagina != null){
             query = query.Skip(((int)pagina - 1) * itemsPorPagina).Take(itemsPorPagina);
         }
